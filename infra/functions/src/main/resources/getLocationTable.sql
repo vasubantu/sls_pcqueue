@@ -1,1 +1,0 @@
-SELECT id,name,code,description FROM public.locations order by id limit 100--where id =4

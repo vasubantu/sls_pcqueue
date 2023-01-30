@@ -1,1 +1,0 @@
-SELECT id,name,code,description FROM public.locations --where id =4
