@@ -1,0 +1,14 @@
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/CollateratePcQueueDataRetrieveLambdaHandler.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/utilities/AWSUtils.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/utilities/SetupUtils.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/pesistence/CollaterateLocation.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/exception/FileResourceException.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/pojo/Constants.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/pesistence/BaseDao.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/pojo/DBCredentials.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/pesistence/CollaterateLocationDAO.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/utilities/DbConnector.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/exception/CollaterateLambdaDAOException.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/utilities/FileResourcesUtils.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/exception/CollaterateLambdaException.java
+/Users/dan.reicher/src/sls_pcqueue/functions/src/main/java/com/collaterate/pcqueue/exception/IntegrationException.java
