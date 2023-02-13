@@ -8,12 +8,14 @@ import * as cloudfront_origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Construct } from 'constructs';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { SecurityGroup, Vpc, Subnet } from 'aws-cdk-lib/aws-ec2';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
+import { AttributeType, BillingMode } from 'aws-cdk-lib/aws-dynamodb';
 
 export class CdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -38,6 +40,22 @@ export class CdkStack extends Stack {
       secretVar = "arn:aws:secretsmanager:us-east-1:538493872512:secret:collaterate-aurora-prod-Ywlenr";
 
     console.log(secretVar);
+
+    const table = new dynamodb.Table(this, "Table", {
+      partitionKey: {name: "id", type: AttributeType.NUMBER},
+      tableName: "collaterate_pcqueue_delta1",
+      replicationRegions: ["us-east-1"],
+      billingMode: BillingMode.PROVISIONED,
+    });
+
+    const tableScaling = table.autoScaleWriteCapacity({
+      minCapacity: 1,
+      maxCapacity: 10,
+    });
+
+    tableScaling.scaleOnUtilization({
+      targetUtilizationPercent: 75
+    });
 
     const lambdaRole = new Role(this, `collaterate_pcqueue_role-${stage}`,
       { assumedBy: new ServicePrincipal("lambda.amazonaws.com") });
