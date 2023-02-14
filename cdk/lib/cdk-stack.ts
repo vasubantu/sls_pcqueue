@@ -6,15 +6,14 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront_origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
-import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as eventsTargets from 'aws-cdk-lib/aws-events-targets';
+import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
+import * as events from 'aws-cdk-lib/aws-events';
 import { Construct } from 'constructs';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { SecurityGroup, Vpc, Subnet } from 'aws-cdk-lib/aws-ec2';
-import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { AttributeType, BillingMode } from 'aws-cdk-lib/aws-dynamodb';
 
 export class CdkStack extends Stack {
@@ -44,7 +43,6 @@ export class CdkStack extends Stack {
     const table = new dynamodb.Table(this, "Table", {
       partitionKey: {name: "id", type: AttributeType.NUMBER},
       tableName: "collaterate_pcqueue_delta1",
-      replicationRegions: ["us-east-1"],
       billingMode: BillingMode.PROVISIONED,
     });
 
@@ -78,12 +76,12 @@ export class CdkStack extends Stack {
     });
 
     const pcQueueLambdaFunction = new lambda.Function(this, "collaterate-pcqueue", {
-      runtime: Runtime.JAVA_11,
+      runtime: lambda.Runtime.JAVA_11,
       handler: "com.collaterate.pcqueue.CollateratePcQueueDataRetrieveLambdaHandler::handleRequest",
       memorySize: 1024,
       timeout: Duration.seconds(20),
       functionName: `CollateratePcQueueDataRetrieveLambdaHandler-${stage}`,
-      code: Code.fromAsset('../assets/function.jar'),
+      code: lambda.Code.fromAsset('../assets/function.jar'),
       environment: {
         "SECRET_ARN_READER": secretVar,
         "REGION": "us-east-1"
@@ -94,9 +92,12 @@ export class CdkStack extends Stack {
       role: lambdaRole
     });
 
-    const schedulerRule = new Rule(this, "lambda-scheduler", {
+    const pcQueueLambdaFunctionTarget = new eventsTargets.LambdaFunction(pcQueueLambdaFunction);
+
+    const schedulerRule = new events.Rule(this, "lambda-scheduler", {
       ruleName: `collaterate_pcqueue_lambda_rule-${stage}`,
-      schedule: Schedule.rate(Duration.minutes(10))
+      schedule: events.Schedule.rate(Duration.minutes(10)),
+      targets: [pcQueueLambdaFunctionTarget]
     });
 
     const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: 'test-d-collaterate.net' });
@@ -164,7 +165,7 @@ export class CdkStack extends Stack {
     // Route53 alias record for the CloudFront distribution
     new route53.ARecord(this, 'SiteAliasRecord', {
       recordName: siteDomain,
-      target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
+      target: route53.RecordTarget.fromAlias(new route53Targets.CloudFrontTarget(distribution)),
       zone
     });
 
