@@ -9,11 +9,8 @@ jobs:
         with:
           node-version: "14"
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          aws-access-key-id: ${{ secrets.AWS_CI_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_CI_SECRET_ACCESS_KEY }}
-          aws-region: 'us-east-1'
+      - name: Serverless AWS authentication
+        run: sls config credentials --provider aws --key ${{ secrets.AWS_CI_ACCESS_KEY_ID }} --secret "${{ secrets.AWS_CI_SECRET_ACCESS_KEY }}"
       - name: Install dependencies
         run: yarn
       - name: Synth stack
