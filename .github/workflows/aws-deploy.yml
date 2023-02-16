@@ -10,7 +10,7 @@ jobs:
         with:
           cdk_subcommand: 'deploy'
           cdk_stack: 'CdkStack'
-          cdk_args: '--require-approval never'
+          cdk_args: '-c stage=test-d'
           actions_comment: false
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CI_ACCESS_KEY_ID }}
