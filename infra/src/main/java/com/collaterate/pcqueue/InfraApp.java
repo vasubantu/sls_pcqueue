@@ -20,7 +20,7 @@ public class InfraApp {
         String env = obj.getString("env");
 
         new InfraStack(app, "collateratepcqueuecdk-"+env, StackProps.builder()
-                .env(Environment.builder().account("538493872512").region("us-east-1").build())
+            //    .env(Environment.builder().account("538493872512").region("us-east-1").build())
                 .build());
 
 //        new InfraStack(app, "collateratepcqueuecdk", StackProps.builder()
