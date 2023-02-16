@@ -9,7 +9,6 @@ jobs:
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: 'deploy'
-          cdk_stack: 'CdkStack'
           cdk_args: '-c stage=test-d'
           actions_comment: false
         env:
