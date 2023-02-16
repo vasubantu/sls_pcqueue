@@ -8,7 +8,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - name: Configure aws credentials
       - name: Serverless AWS authentication
         run: sls config credentials --provider aws --key ${{ secrets.AWS_CI_ACCESS_KEY_ID }} --secret "${{ secrets.AWS_CI_SECRET_ACCESS_KEY }}"
       - name: Install dependencies
